@@ -30,10 +30,17 @@ An immersive 3D cylinder photography gallery built with PostgreSQL, Express, Rea
    ```
 
 3. **Configure environment variables**
-   
+
    Copy the example environment file:
+   
+   On Bash/PowerShell:
    ```bash
    cp server/.env.example server/.env
+   ```
+   
+   On Windows Command Prompt:
+   ```cmd
+   copy server\.env.example server\.env
    ```
    
    Edit `server/.env` with your configuration:
@@ -134,9 +141,14 @@ Each gallery contains 3 images with captions.
    npm run build --prefix server
    ```
 
-3. Set `NODE_ENV=production` in your environment
+3. Run database migrations:
+   ```bash
+   npm run db:migrate
+   ```
 
-4. Start the server:
+4. Set `NODE_ENV=production` in your environment
+
+5. Start the server:
    ```bash
    npm run start
    ```

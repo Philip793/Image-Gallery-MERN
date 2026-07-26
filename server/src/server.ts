@@ -92,7 +92,14 @@ async function startServer(): Promise<void> {
       console.log(`Server running on http://localhost:${port}`);
     });
 
+    let isShuttingDown = false;
+
     async function shutdown(signal: string): Promise<void> {
+      if (isShuttingDown) {
+        return;
+      }
+
+      isShuttingDown = true;
       console.log(`${signal} received. Shutting down.`);
 
       server.close(async (error) => {
