@@ -7,7 +7,9 @@ import express, {
 } from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import { sql } from "drizzle-orm";
 import { connectDB } from "./config/db.js";
+import { db } from "./db/index.js";
 import { galleryRouter } from "./routes/galleryRoutes.js";
 import type { ApiError } from "./types/index.js";
 
@@ -27,13 +29,29 @@ app.use(
 
 app.use(express.json({ limit: "1mb" }));
 
-app.get("/api/health", (_request: Request, response: Response) => {
-  response.json({
-    status: "ok"
-  });
-});
+app.get(
+  "/api/health",
+  async (_request: Request, response: Response, next: NextFunction) => {
+    try {
+      await db.execute(sql`SELECT 1`);
+
+      response.json({
+        status: "ok",
+        database: "connected"
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 app.use("/api/galleries", galleryRouter);
+
+app.use("/api", (_request: Request, response: Response) => {
+  response.status(404).json({
+    message: "API endpoint not found."
+  });
+});
 
 if (process.env.NODE_ENV === "production") {
   const clientDirectory = path.resolve(

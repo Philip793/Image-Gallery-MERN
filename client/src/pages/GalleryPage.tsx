@@ -68,12 +68,12 @@ export default function GalleryPage() {
     );
   }
 
-  if (status === "error") {
+  if (status === "error" || !gallery) {
     return (
       <section className="gallery-page gallery-page--centered">
         <div className="error-panel" role="alert">
           <h1>Gallery unavailable</h1>
-          <p>{error}</p>
+          <p>{error || "Gallery data could not be loaded."}</p>
           <Link className="button-link" to="/">
             Return home
           </Link>

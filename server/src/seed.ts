@@ -8,8 +8,10 @@ async function seedDatabase(): Promise<void> {
   try {
     await connectDB();
 
-    await db.delete(galleriesTable);
-    await db.insert(galleriesTable).values(seedGalleries);
+    await db.transaction(async (transaction) => {
+      await transaction.delete(galleriesTable);
+      await transaction.insert(galleriesTable).values(seedGalleries);
+    });
 
     console.log(`Seeded ${seedGalleries.length} galleries.`);
   } catch (error) {
