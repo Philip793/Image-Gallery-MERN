@@ -19,8 +19,8 @@ An immersive 3D cylinder photography gallery built with PostgreSQL, Express, Rea
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Philip793/Image-Gallery-MERN.git
-   cd Image-Gallery-MERN
+   git clone https://github.com/Philip793/Orbit-Gallery.git
+   cd Orbit-Gallery
    ```
 
 2. **Install dependencies**
@@ -146,11 +146,19 @@ Each gallery contains 3 images with captions.
    npm run db:migrate
    ```
 
-4. Set `NODE_ENV=production` in your environment
-
-5. Start the server:
+4. Seed the database if you need the sample galleries:
    ```bash
-   npm run start
+   npm run db:seed
+   ```
+
+5. Build the application:
+   ```bash
+   npm run build
+   ```
+
+6. Set `NODE_ENV=production` in your environment and start the server:
+   ```bash
+   NODE_ENV=production npm run start
    ```
 
 The production server serves the client static files and handles API requests.

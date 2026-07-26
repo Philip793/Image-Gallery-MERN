@@ -2,10 +2,45 @@ import { asc, eq } from "drizzle-orm";
 import type { NextFunction, Request, Response } from "express";
 import { db } from "../db/index.js";
 import { galleries } from "../db/schema.js";
+import {
+  galleryImageSchema,
+  galleryResponseSchema,
+  landingImageResponseSchema
+} from "../schemas.js";
 import type {
+  GalleryImage,
+  GalleryRecord,
   GalleryResponse,
   LandingImageResponse
 } from "../types/index.js";
+
+interface LandingImagePayload {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  landingImage: GalleryImage;
+}
+
+function toGalleryResponse(gallery: GalleryRecord): GalleryResponse {
+  return galleryResponseSchema.parse({
+    ...gallery,
+    createdAt: gallery.createdAt.toISOString(),
+    updatedAt: gallery.updatedAt.toISOString()
+  });
+}
+
+function toLandingImageResponse(gallery: LandingImagePayload): LandingImageResponse {
+  return landingImageResponseSchema.parse({
+    id: gallery.id.toString(),
+    title: gallery.title,
+    slug: gallery.slug,
+    description: gallery.description,
+    src: gallery.landingImage.src,
+    alt: gallery.landingImage.alt,
+    caption: gallery.landingImage.caption
+  });
+}
 
 export async function getLandingImages(
   _request: Request,
@@ -24,15 +59,14 @@ export async function getLandingImages(
       .from(galleries)
       .orderBy(asc(galleries.featuredOrder), asc(galleries.title));
 
-    const images: LandingImageResponse[] = rows.map((gallery) => ({
-      id: gallery.id.toString(),
-      title: gallery.title,
-      slug: gallery.slug,
-      description: gallery.description,
-      src: gallery.landingImage.src,
-      alt: gallery.landingImage.alt,
-      caption: gallery.landingImage.caption
-    }));
+    const images: LandingImageResponse[] = rows.map((gallery) => {
+      const landingImage = galleryImageSchema.parse(gallery.landingImage);
+
+      return toLandingImageResponse({
+        ...gallery,
+        landingImage
+      });
+    });
 
     response.json(images);
   } catch (error) {
@@ -51,11 +85,9 @@ export async function getAllGalleries(
       .from(galleries)
       .orderBy(asc(galleries.featuredOrder), asc(galleries.title));
 
-    const galleryResponses: GalleryResponse[] = rows.map((gallery) => ({
-      ...gallery,
-      createdAt: gallery.createdAt.toISOString(),
-      updatedAt: gallery.updatedAt.toISOString()
-    }));
+    const galleryResponses: GalleryResponse[] = rows.map((gallery) =>
+      toGalleryResponse(gallery)
+    );
 
     response.json(galleryResponses);
   } catch (error) {
@@ -69,10 +101,11 @@ export async function getGalleryBySlug(
   next: NextFunction
 ): Promise<void> {
   try {
+    const slug = request.params.slug.toLowerCase();
     const [gallery] = await db
       .select()
       .from(galleries)
-      .where(eq(galleries.slug, request.params.slug.toLowerCase()))
+      .where(eq(galleries.slug, slug))
       .limit(1);
 
     if (!gallery) {
@@ -82,13 +115,7 @@ export async function getGalleryBySlug(
       return;
     }
 
-    const galleryResponse: GalleryResponse = {
-      ...gallery,
-      createdAt: gallery.createdAt.toISOString(),
-      updatedAt: gallery.updatedAt.toISOString()
-    };
-
-    response.json(galleryResponse);
+    response.json(toGalleryResponse(gallery));
   } catch (error) {
     next(error);
   }

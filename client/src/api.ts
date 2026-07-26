@@ -1,3 +1,5 @@
+import { z } from "zod";
+import { gallerySchema, landingImageSchema } from "./schemas";
 import type { Gallery, LandingImage } from "./types";
 
 interface RequestOptions {
@@ -38,20 +40,25 @@ async function request<T>(
     throw new Error(message);
   }
 
-  return response.json() as Promise<T>;
+  const payload = (await response.json()) as unknown;
+
+  return payload as T;
 }
 
-export function getLandingImages(
+export async function getLandingImages(
   signal?: AbortSignal
 ): Promise<LandingImage[]> {
-  return request<LandingImage[]>("/galleries/landing", { signal });
+  const payload = await request<unknown>("/galleries/landing", { signal });
+  return z.array(landingImageSchema).parse(payload);
 }
 
-export function getGallery(
+export async function getGallery(
   slug: string,
   signal?: AbortSignal
 ): Promise<Gallery> {
-  return request<Gallery>(`/galleries/${encodeURIComponent(slug)}`, {
+  const payload = await request<unknown>(`/galleries/${encodeURIComponent(slug)}`, {
     signal
   });
+
+  return gallerySchema.parse(payload);
 }

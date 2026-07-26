@@ -27,6 +27,7 @@ export default function GalleryPage() {
     }
 
     const controller = new AbortController();
+    const gallerySlug = slug;
 
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -43,7 +44,7 @@ export default function GalleryPage() {
         setError("");
         setGallery(null);
 
-        const result = await getGallery(slug!, controller.signal);
+        const result = await getGallery(gallerySlug, controller.signal);
 
         setGallery(result);
         setStatus("success");

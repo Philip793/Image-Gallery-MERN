@@ -1,3 +1,8 @@
+import type { InferSelectModel } from "drizzle-orm";
+import type { galleries } from "../db/schema.js";
+
+export type GalleryRecord = InferSelectModel<typeof galleries>;
+
 export interface GalleryImage {
   src: string;
   alt: string;

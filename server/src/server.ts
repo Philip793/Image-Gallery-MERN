@@ -1,20 +1,23 @@
 import "dotenv/config";
 import cors from "cors";
+import { sql } from "drizzle-orm";
 import express, {
   type NextFunction,
   type Request,
   type Response
 } from "express";
+import type { Server } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-import { sql } from "drizzle-orm";
 import { connectDB } from "./config/db.js";
 import { closeDb, db } from "./db/index.js";
 import { galleryRouter } from "./routes/galleryRoutes.js";
 import type { ApiError } from "./types/index.js";
 
-const app = express();
+export const app = express();
 const port = Number(process.env.PORT) || 5000;
+let httpServer: Server | undefined;
+let isShuttingDown = false;
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDirectory = path.dirname(currentFile);
@@ -84,40 +87,50 @@ app.use(
   }
 );
 
-async function startServer(): Promise<void> {
+async function shutdown(signal: string): Promise<void> {
+  if (isShuttingDown) {
+    return;
+  }
+
+  isShuttingDown = true;
+  console.log(`${signal} received. Shutting down.`);
+
+  if (!httpServer) {
+    try {
+      await closeDb();
+      process.exit(0);
+    } catch (shutdownError) {
+      console.error("Database shutdown error:", shutdownError);
+      process.exit(1);
+    }
+
+    return;
+  }
+
+  httpServer.close(async (error) => {
+    try {
+      await closeDb();
+
+      if (error) {
+        console.error("HTTP shutdown error:", error);
+        process.exit(1);
+      }
+
+      process.exit(0);
+    } catch (shutdownError) {
+      console.error("Database shutdown error:", shutdownError);
+      process.exit(1);
+    }
+  });
+}
+
+export async function startServer(): Promise<void> {
   try {
     await connectDB();
 
-    const server = app.listen(port, () => {
+    httpServer = app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);
     });
-
-    let isShuttingDown = false;
-
-    async function shutdown(signal: string): Promise<void> {
-      if (isShuttingDown) {
-        return;
-      }
-
-      isShuttingDown = true;
-      console.log(`${signal} received. Shutting down.`);
-
-      server.close(async (error) => {
-        try {
-          await closeDb();
-
-          if (error) {
-            console.error("HTTP shutdown error:", error);
-            process.exit(1);
-          }
-
-          process.exit(0);
-        } catch (shutdownError) {
-          console.error("Database shutdown error:", shutdownError);
-          process.exit(1);
-        }
-      });
-    }
 
     process.on("SIGINT", () => {
       void shutdown("SIGINT");
@@ -132,4 +145,6 @@ async function startServer(): Promise<void> {
   }
 }
 
-void startServer();
+if (process.env.NODE_ENV !== "test") {
+  void startServer();
+}
