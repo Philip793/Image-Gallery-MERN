@@ -31,8 +31,8 @@ export interface GalleryResponse {
   featuredOrder: number;
   landingImage: GalleryImage;
   images: GalleryImage[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ApiError extends Error {

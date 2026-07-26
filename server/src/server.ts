@@ -9,7 +9,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { sql } from "drizzle-orm";
 import { connectDB } from "./config/db.js";
-import { db } from "./db/index.js";
+import { closeDb, db } from "./db/index.js";
 import { galleryRouter } from "./routes/galleryRoutes.js";
 import type { ApiError } from "./types/index.js";
 
@@ -88,8 +88,36 @@ async function startServer(): Promise<void> {
   try {
     await connectDB();
 
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);
+    });
+
+    async function shutdown(signal: string): Promise<void> {
+      console.log(`${signal} received. Shutting down.`);
+
+      server.close(async (error) => {
+        try {
+          await closeDb();
+
+          if (error) {
+            console.error("HTTP shutdown error:", error);
+            process.exit(1);
+          }
+
+          process.exit(0);
+        } catch (shutdownError) {
+          console.error("Database shutdown error:", shutdownError);
+          process.exit(1);
+        }
+      });
+    }
+
+    process.on("SIGINT", () => {
+      void shutdown("SIGINT");
+    });
+
+    process.on("SIGTERM", () => {
+      void shutdown("SIGTERM");
     });
   } catch (error) {
     console.error("Server failed to start:", error);

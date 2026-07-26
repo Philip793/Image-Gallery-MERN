@@ -80,9 +80,10 @@ This will start:
 ### Root
 - `npm run install:all` - Install dependencies for both client and server
 - `npm run dev` - Start both client and server in development mode
-- `npm run db:push` - Push database schema changes
+- `npm run db:push` - Push database schema changes (for rapid local iteration)
+- `npm run db:migrate` - Run database migrations (for reproducible setup)
 - `npm run db:seed` - Seed the database with sample galleries
-- `npm run db:setup` - Push schema and seed data (combined)
+- `npm run db:setup` - Run migrations and seed data (combined)
 - `npm run build` - Build both client and server for production
 - `npm run start` - Start the production server
 

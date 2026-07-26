@@ -6,8 +6,9 @@
     "install:all": "npm install --prefix server && npm install --prefix client",
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "db:push": "npm run db:push --prefix server",
+    "db:migrate": "npm run db:migrate --prefix server",
     "db:seed": "npm run seed --prefix server",
-    "db:setup": "npm run db:push && npm run db:seed",
+    "db:setup": "npm run db:migrate && npm run db:seed",
     "build": "npm run build --prefix server && npm run build --prefix client",
     "start": "npm run start --prefix server"
   },

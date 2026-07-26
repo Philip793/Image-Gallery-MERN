@@ -51,7 +51,13 @@ export async function getAllGalleries(
       .from(galleries)
       .orderBy(asc(galleries.featuredOrder), asc(galleries.title));
 
-    response.json(rows);
+    const galleryResponses: GalleryResponse[] = rows.map((gallery) => ({
+      ...gallery,
+      createdAt: gallery.createdAt.toISOString(),
+      updatedAt: gallery.updatedAt.toISOString()
+    }));
+
+    response.json(galleryResponses);
   } catch (error) {
     next(error);
   }
@@ -76,7 +82,13 @@ export async function getGalleryBySlug(
       return;
     }
 
-    response.json(gallery);
+    const galleryResponse: GalleryResponse = {
+      ...gallery,
+      createdAt: gallery.createdAt.toISOString(),
+      updatedAt: gallery.updatedAt.toISOString()
+    };
+
+    response.json(galleryResponse);
   } catch (error) {
     next(error);
   }
