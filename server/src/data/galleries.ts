@@ -1,4 +1,6 @@
-export const galleries = [
+import type { GallerySeed } from "../types/index.js";
+
+export const galleries: GallerySeed[] = [
   {
     title: "Coastlines",
     slug: "coastlines",

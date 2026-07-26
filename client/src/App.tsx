@@ -1,9 +1,9 @@
 import { Link, NavLink, Route, Routes } from "react-router-dom";
-import GalleryPage from "./pages/GalleryPage.jsx";
-import LandingPage from "./pages/LandingPage.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
+import GalleryPage from "./pages/GalleryPage";
+import LandingPage from "./pages/LandingPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
-function getNavigationClass({ isActive }) {
+function getNavigationClass({ isActive }: { isActive: boolean }): string {
   return isActive
     ? "site-navigation__link site-navigation__link--active"
     : "site-navigation__link";

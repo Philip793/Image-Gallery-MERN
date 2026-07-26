@@ -1,16 +1,31 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getGallery } from "../api.js";
-import Loading from "../components/Loading.jsx";
+import { getGallery } from "../api";
+import Loading from "../components/Loading";
+import type { Gallery, LoadStatus } from "../types";
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "An unexpected error occurred.";
+}
 
 export default function GalleryPage() {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
 
-  const [gallery, setGallery] = useState(null);
-  const [status, setStatus] = useState("loading");
+  const [gallery, setGallery] = useState<Gallery | null>(null);
+  const [status, setStatus] = useState<LoadStatus>("loading");
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (!slug) {
+      setError("Gallery slug is missing.");
+      setStatus("error");
+      return;
+    }
+
     const controller = new AbortController();
 
     window.scrollTo({
@@ -24,21 +39,21 @@ export default function GalleryPage() {
         setError("");
         setGallery(null);
 
-        const result = await getGallery(slug, controller.signal);
+        const result = await getGallery(slug!, controller.signal);
 
         setGallery(result);
         setStatus("success");
       } catch (requestError) {
-        if (requestError.name === "AbortError") {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") {
           return;
         }
 
-        setError(requestError.message);
+        setError(getErrorMessage(requestError));
         setStatus("error");
       }
     }
 
-    loadGallery();
+    void loadGallery();
 
     return () => {
       controller.abort();
@@ -81,7 +96,7 @@ export default function GalleryPage() {
       </header>
 
       <div className="gallery-grid">
-        {gallery.images.map((image, index) => (
+        {gallery.images.map((image, index: number) => (
           <figure
             className="gallery-image"
             key={`${gallery.slug}-${index}`}

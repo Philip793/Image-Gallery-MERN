@@ -1,6 +1,12 @@
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
+import type { LandingImage } from "../types";
 
-export default function CylinderGallery({ items }) {
+interface CylinderGalleryProps {
+  items: LandingImage[];
+}
+
+export default function CylinderGallery({ items }: CylinderGalleryProps) {
   if (!items.length) {
     return (
       <p className="empty-message">
@@ -11,24 +17,23 @@ export default function CylinderGallery({ items }) {
 
   const angleStep = 360 / items.length;
 
+  const sceneStyle = {
+    "--item-count": items.length
+  } as CSSProperties;
+
   return (
-    <div
-      className="cylinder-scene"
-      style={{
-        "--item-count": items.length
-      }}
-    >
+    <div className="cylinder-scene" style={sceneStyle}>
       <div className="cylinder">
         {items.map((item, index) => {
-          const angle = `${index * angleStep}deg`;
+          const itemStyle = {
+            "--item-angle": `${index * angleStep}deg`
+          } as CSSProperties;
 
           return (
             <div
               className="cylinder-item"
               key={item.id || item.slug}
-              style={{
-                "--item-angle": angle
-              }}
+              style={itemStyle}
             >
               <Link
                 className="cylinder-card"
@@ -39,7 +44,7 @@ export default function CylinderGallery({ items }) {
                   className="cylinder-card__image"
                   src={item.src}
                   alt={item.alt}
-                  draggable="false"
+                  draggable={false}
                 />
 
                 <span className="cylinder-card__overlay">

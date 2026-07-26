@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
-import { getLandingImages } from "../api.js";
-import CylinderGallery from "../components/CylinderGallery.jsx";
-import Loading from "../components/Loading.jsx";
+import { getLandingImages } from "../api";
+import CylinderGallery from "../components/CylinderGallery";
+import Loading from "../components/Loading";
+import type { LandingImage, LoadStatus } from "../types";
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "An unexpected error occurred.";
+}
 
 export default function LandingPage() {
-  const [images, setImages] = useState([]);
-  const [status, setStatus] = useState("loading");
+  const [images, setImages] = useState<LandingImage[]>([]);
+  const [status, setStatus] = useState<LoadStatus>("loading");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -21,16 +30,16 @@ export default function LandingPage() {
         setImages(result);
         setStatus("success");
       } catch (requestError) {
-        if (requestError.name === "AbortError") {
+        if (requestError instanceof DOMException && requestError.name === "AbortError") {
           return;
         }
 
-        setError(requestError.message);
+        setError(getErrorMessage(requestError));
         setStatus("error");
       }
     }
 
-    loadImages();
+    void loadImages();
 
     return () => {
       controller.abort();
