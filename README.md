@@ -25,6 +25,7 @@ An immersive 3D cylinder photography gallery built with PostgreSQL, Express, Rea
 
 2. **Install dependencies**
    ```bash
+   npm install
    npm run install:all
    ```
 
@@ -60,8 +61,7 @@ On Windows Command Prompt, run the command on one line.
 
 Push the schema and seed data:
 ```bash
-npm run db:push
-npm run seed
+npm run db:setup
 ```
 
 ## Development
@@ -80,10 +80,11 @@ This will start:
 ### Root
 - `npm run install:all` - Install dependencies for both client and server
 - `npm run dev` - Start both client and server in development mode
+- `npm run db:push` - Push database schema changes
+- `npm run db:seed` - Seed the database with sample galleries
+- `npm run db:setup` - Push schema and seed data (combined)
 - `npm run build` - Build both client and server for production
 - `npm run start` - Start the production server
-- `npm run db:push` - Push database schema changes
-- `npm run seed` - Seed the database with sample galleries
 
 ### Client
 - `npm run dev --prefix client` - Start Vite dev server
@@ -97,6 +98,8 @@ This will start:
 - `npm run build --prefix server` - Compile TypeScript
 - `npm run start --prefix server` - Start production server
 - `npm run seed --prefix server` - Seed database
+- `npm run db:generate --prefix server` - Generate database migration
+- `npm run db:migrate --prefix server` - Run database migrations
 - `npm run db:push --prefix server` - Push schema to database
 
 ## Database Seeding
