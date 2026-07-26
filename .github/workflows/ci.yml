@@ -29,14 +29,14 @@ jobs:
       - name: Install server dependencies
         run: npm ci --prefix server
 
+      - name: Type check client
+        run: npm run typecheck --prefix client
+
+      - name: Type check server
+        run: npm run typecheck --prefix server
+
       - name: Build client
         run: npm run build --prefix client
 
       - name: Build server
         run: npm run build --prefix server
-
-      - name: Type check client
-        run: npx tsc --noEmit -p client/tsconfig.json
-
-      - name: Type check server
-        run: npx tsc --noEmit -p server/tsconfig.json

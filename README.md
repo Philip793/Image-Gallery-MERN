@@ -1,6 +1,6 @@
 # Orbit Gallery
 
-An immersive 3D cylinder photography gallery built with the MERN stack (MongoDB/PostgreSQL, Express, React, Node.js), now fully migrated to TypeScript.
+An immersive 3D cylinder photography gallery built with PostgreSQL, Express, React, Node.js and TypeScript.
 
 ## Tech Stack
 
@@ -44,17 +44,25 @@ An immersive 3D cylinder photography gallery built with the MERN stack (MongoDB/
    ```
 
 4. **Set up the database**
-   
-   Create the PostgreSQL database:
-   ```bash
-   createdb cylinder_gallery
-   ```
-   
-   Push the schema and seed data:
-   ```bash
-   npm run db:push
-   npm run seed
-   ```
+
+### Start PostgreSQL with Docker
+
+```bash
+docker run --name cylinder-gallery-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=cylinder_gallery \
+  -p 5432:5432 \
+  -d postgres:16-alpine
+```
+
+On Windows Command Prompt, run the command on one line.
+
+Push the schema and seed data:
+```bash
+npm run db:push
+npm run seed
+```
 
 ## Development
 
@@ -79,11 +87,13 @@ This will start:
 
 ### Client
 - `npm run dev --prefix client` - Start Vite dev server
+- `npm run typecheck --prefix client` - Run TypeScript type checking
 - `npm run build --prefix client` - Build for production
 - `npm run preview --prefix client` - Preview production build
 
 ### Server
 - `npm run dev --prefix server` - Start server with tsx watch
+- `npm run typecheck --prefix server` - Run TypeScript type checking
 - `npm run build --prefix server` - Compile TypeScript
 - `npm run start --prefix server` - Start production server
 - `npm run seed --prefix server` - Seed database
