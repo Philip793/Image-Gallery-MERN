@@ -44,6 +44,12 @@ jobs:
       - name: Install server dependencies
         run: npm ci --prefix server
 
+      - name: Lint client
+        run: npm run lint --prefix client
+
+      - name: Lint server
+        run: npm run lint --prefix server
+
       - name: Type check client
         run: npm run typecheck --prefix client
 
