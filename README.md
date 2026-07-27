@@ -102,6 +102,8 @@ This will start:
 - `npm test` - Run both client and server test suites
 - `npm run test:client` - Run the React component and route tests
 - `npm run test:server` - Run the PostgreSQL-backed API integration tests
+- `npm run test:e2e` - Build and run the Playwright production test
+- `npm run test:e2e:only` - Run Playwright without rebuilding
 
 ### Client
 - `npm run dev --prefix client` - Start Vite dev server
