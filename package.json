@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "npm run test:client && npm run test:server",
+    "test": "npm run build && npm run test:client && npm run test:server",
     "test:client": "npm run test --prefix client",
     "test:server": "npm run test --prefix server",
     "test:e2e": "playwright test",

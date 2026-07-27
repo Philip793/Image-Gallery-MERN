@@ -12,10 +12,10 @@ interface ErrorBody {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
-async function request<T>(
+async function request(
   endpoint: string,
   options: RequestOptions = {}
-): Promise<T> {
+): Promise<unknown> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "GET",
     headers: {
@@ -40,15 +40,13 @@ async function request<T>(
     throw new Error(message);
   }
 
-  const payload = (await response.json()) as unknown;
-
-  return payload as T;
+  return response.json();
 }
 
 export async function getLandingImages(
   signal?: AbortSignal
 ): Promise<LandingImage[]> {
-  const payload = await request<unknown>("/galleries/landing", { signal });
+  const payload = await request("/galleries/landing", { signal });
   return z.array(landingImageSchema).parse(payload);
 }
 
@@ -56,7 +54,7 @@ export async function getGallery(
   slug: string,
   signal?: AbortSignal
 ): Promise<Gallery> {
-  const payload = await request<unknown>(`/galleries/${encodeURIComponent(slug)}`, {
+  const payload = await request(`/galleries/${encodeURIComponent(slug)}`, {
     signal
   });
 

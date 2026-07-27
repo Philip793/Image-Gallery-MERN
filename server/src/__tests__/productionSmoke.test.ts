@@ -59,13 +59,21 @@ describe("production smoke", () => {
       return;
     }
 
-    child.kill("SIGTERM");
     const activeChild = child;
+    activeChild.kill("SIGTERM");
 
-    await Promise.race([
-      new Promise<void>((resolve) => activeChild.once("exit", () => resolve())),
-      new Promise((resolve) => globalThis.setTimeout(resolve, 5000))
+    const exited = await Promise.race([
+      new Promise<boolean>((resolve) => {
+        activeChild.once("exit", () => resolve(true));
+      }),
+      new Promise<boolean>((resolve) => {
+        globalThis.setTimeout(() => resolve(false), 5_000);
+      })
     ]);
+
+    if (!exited && activeChild.exitCode === null) {
+      activeChild.kill("SIGKILL");
+    }
   });
 
   it("serves the landing page and gallery route in production mode", async () => {

@@ -79,3 +79,11 @@ jobs:
         run: npm run test --prefix server
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/cylinder_gallery
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run production browser smoke test
+        run: npm run test:e2e
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/cylinder_gallery

@@ -74,17 +74,34 @@ describe("api client", () => {
     await expect(getLandingImages()).rejects.toThrow("Bad request");
   });
 
-  it("supports request cancellation", async () => {
-    const abortError = new DOMException("The operation was aborted.", "AbortError");
+  it("passes the abort signal to fetch", async () => {
+    const controller = new AbortController();
 
-    globalThis.fetch = vi.fn().mockImplementation((_url: string, init?: globalThis.RequestInit) => {
-      const signal = init?.signal;
-      signal?.throwIfAborted();
-      return Promise.reject(abortError);
-    }) as typeof fetch;
+    const fetchMock = vi.fn(
+      (_url: string, init?: globalThis.RequestInit) =>
+        new Promise<never>((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => {
+            reject(
+              new DOMException("The operation was aborted.", "AbortError")
+            );
+          });
+        })
+    );
 
-    await expect(getLandingImages(new AbortController().signal)).rejects.toThrow(
-      "The operation was aborted."
+    globalThis.fetch = fetchMock as typeof fetch;
+
+    const request = getLandingImages(controller.signal);
+    controller.abort();
+
+    await expect(request).rejects.toMatchObject({
+      name: "AbortError"
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/galleries/landing"),
+      expect.objectContaining({
+        signal: controller.signal
+      })
     );
   });
 });
