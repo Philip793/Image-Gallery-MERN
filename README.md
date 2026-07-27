@@ -99,7 +99,9 @@ This will start:
 - `npm run db:setup` - Run migrations and seed data (combined)
 - `npm run build` - Build both client and server for production
 - `npm run start` - Start the production server
-- `npm test` - Run PostgreSQL-backed API integration tests
+- `npm test` - Run both client and server test suites
+- `npm run test:client` - Run the React component and route tests
+- `npm run test:server` - Run the PostgreSQL-backed API integration tests
 
 ### Client
 - `npm run dev --prefix client` - Start Vite dev server
@@ -154,6 +156,10 @@ Each gallery contains 3 images with captions.
    npm run db:seed
    ```
 
+   > Warning: `npm run db:seed` deletes all existing gallery records before
+   > inserting the sample data. Do not run it against production data that
+   > must be preserved.
+
 3. Build the application:
    ```bash
    npm run build
@@ -173,7 +179,7 @@ The production server serves the client static files and handles API requests.
 
 ## Testing
 
-The API integration suite uses PostgreSQL-backed tests. To run them locally, make sure PostgreSQL is running and the migrations and seed data are present:
+The test suite runs both client and server checks. To run them locally, make sure PostgreSQL is running and the migrations and seed data are present:
 
 ```bash
 npm run db:setup
