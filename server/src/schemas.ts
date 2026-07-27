@@ -38,13 +38,3 @@ export const landingImageResponseSchema = z.object({
   caption: z.string().trim().max(240).default("")
 });
 
-export const galleryCreateRequestSchema = z.object({
-  title: z.string().trim().min(1, "Title is required."),
-  slug: slugSchema,
-  description: z.string().trim().min(1, "Description is required."),
-  featuredOrder: z.number().int().nonnegative(),
-  landingImage: galleryImageSchema,
-  images: z.array(galleryImageSchema).min(1)
-});
-
-export const galleryUpdateRequestSchema = galleryCreateRequestSchema.partial();

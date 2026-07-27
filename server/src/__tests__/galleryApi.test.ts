@@ -66,6 +66,15 @@ describe("gallery API", () => {
     });
   });
 
+  it("returns a 400 for an invalid gallery slug", async () => {
+    const response = await request(app).get("/api/galleries/Bad%20Slug");
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({
+      message: "Invalid gallery slug."
+    });
+  });
+
   it("returns a 404 for a missing gallery", async () => {
     const response = await request(app).get("/api/galleries/nonexistent");
 

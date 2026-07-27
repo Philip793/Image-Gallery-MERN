@@ -5,7 +5,8 @@ import { galleries } from "../db/schema.js";
 import {
   galleryImageSchema,
   galleryResponseSchema,
-  landingImageResponseSchema
+  landingImageResponseSchema,
+  slugSchema
 } from "../schemas.js";
 import type {
   GalleryImage,
@@ -101,7 +102,16 @@ export async function getGalleryBySlug(
   next: NextFunction
 ): Promise<void> {
   try {
-    const slug = request.params.slug.toLowerCase();
+    const slugResult = slugSchema.safeParse(request.params.slug.toLowerCase());
+
+    if (!slugResult.success) {
+      response.status(400).json({
+        message: "Invalid gallery slug."
+      });
+      return;
+    }
+
+    const slug = slugResult.data;
     const [gallery] = await db
       .select()
       .from(galleries)

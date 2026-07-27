@@ -1,6 +1,8 @@
 # Orbit Gallery
 
-An immersive 3D cylinder photography gallery built with PostgreSQL, Express, React, Node.js and TypeScript.
+A TypeScript PERN photography gallery with an interactive CSS 3D cylinder, PostgreSQL, Drizzle ORM, Zod validation and integration-tested APIs.
+
+![Orbit Gallery preview](docs/orbit-gallery-preview.svg)
 
 ## Tech Stack
 
@@ -19,8 +21,8 @@ An immersive 3D cylinder photography gallery built with PostgreSQL, Express, Rea
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Philip793/Orbit-Gallery.git
-   cd Orbit-Gallery
+   git clone https://github.com/Philip793/Image-Gallery-MERN.git
+   cd Image-Gallery-MERN
    ```
 
 2. **Install dependencies**
@@ -93,16 +95,20 @@ This will start:
 - `npm run db:setup` - Run migrations and seed data (combined)
 - `npm run build` - Build both client and server for production
 - `npm run start` - Start the production server
+- `npm test` - Run PostgreSQL-backed API integration tests
 
 ### Client
 - `npm run dev --prefix client` - Start Vite dev server
 - `npm run typecheck --prefix client` - Run TypeScript type checking
+- `npm run lint --prefix client` - Lint the React client
 - `npm run build --prefix client` - Build for production
 - `npm run preview --prefix client` - Preview production build
+- `npm run test --prefix client` - Run React component and route tests
 
 ### Server
 - `npm run dev --prefix server` - Start server with tsx watch
 - `npm run typecheck --prefix server` - Run TypeScript type checking
+- `npm run lint --prefix server` - Lint the Express server
 - `npm run build --prefix server` - Compile TypeScript
 - `npm run start --prefix server` - Start production server
 - `npm run seed --prefix server` - Seed database
@@ -131,37 +137,44 @@ Each gallery contains 3 images with captions.
 
 ## Production Deployment
 
-1. Build the client:
+1. Install dependencies:
    ```bash
-   npm run build --prefix client
+   npm ci
+   npm ci --prefix client
+   npm ci --prefix server
    ```
 
-2. Build the server:
-   ```bash
-   npm run build --prefix server
-   ```
-
-3. Run database migrations:
+2. Run database migrations and seed the sample galleries:
    ```bash
    npm run db:migrate
-   ```
-
-4. Seed the database if you need the sample galleries:
-   ```bash
    npm run db:seed
    ```
 
-5. Build the application:
+3. Build the application:
    ```bash
    npm run build
    ```
 
-6. Set `NODE_ENV=production` in your environment and start the server:
+4. Start the production server:
    ```bash
    NODE_ENV=production npm run start
    ```
 
+   On Windows Command Prompt:
+   ```cmd
+   set NODE_ENV=production&& npm run start
+   ```
+
 The production server serves the client static files and handles API requests.
+
+## Testing
+
+The API integration suite uses PostgreSQL-backed tests. To run them locally, make sure PostgreSQL is running and the migrations and seed data are present:
+
+```bash
+npm run db:setup
+npm test
+```
 
 ## TypeScript Migration
 
