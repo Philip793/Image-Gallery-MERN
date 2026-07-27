@@ -1,5 +1,5 @@
 import "dotenv/config";
-import type { Server } from "http";
+import type { Server } from "node:http";
 import { connectDB } from "./config/db.js";
 import { closeDb } from "./db/index.js";
 import { app } from "./app.js";

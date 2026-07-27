@@ -73,6 +73,10 @@ Push the schema and seed data:
 npm run db:setup
 ```
 
+> Warning: `npm run db:seed` deletes all existing gallery records before
+> inserting the sample galleries. Do not run it against production data
+> you need to retain.
+
 ## Development
 
 Run both client and server in development mode:

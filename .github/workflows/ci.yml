@@ -72,6 +72,9 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/cylinder_gallery
 
+      - name: Run client tests
+        run: npm run test --prefix client
+
       - name: Run API integration tests
         run: npm run test --prefix server
         env:

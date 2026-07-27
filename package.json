@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "npm run test --prefix server",
+    "test": "npm run test:client && npm run test:server",
+    "test:client": "npm run test --prefix client",
+    "test:server": "npm run test --prefix server",
     "install:all": "npm install --prefix server && npm install --prefix client",
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "db:push": "npm run db:push --prefix server",
