@@ -186,6 +186,23 @@ npm run db:setup
 npm test
 ```
 
+### End-to-end testing
+
+Install the Playwright Chromium browser once:
+
+```bash
+npx playwright install chromium
+```
+
+Run the production browser smoke test:
+
+```bash
+npm run db:setup
+npm run test:e2e
+```
+
+The E2E suite builds and starts the production application on port 5010.
+
 ## TypeScript Migration
 
 This project has been fully migrated from JavaScript to TypeScript:
